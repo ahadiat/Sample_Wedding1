@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Syamir & Wani - Jemputan Kahwin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* ------------------------------
+   1. GLOBAL & TYPOGRAPHY
+--------------------------------*/
+body {
+  box-sizing: border-box;
+}
+
+.dancing-script {
+  font-family: 'Dancing Script', cursive;
+}
+
+.poppins {
+  font-family: 'Poppins', sans-serif;
+}
+
+/* ------------------------------
+   2. FLOWER STAGE & ANIMATION
+--------------------------------*/
+.stage {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  min-height: 100svh;
+  height: 100dvh;
+  border-radius: 20px;
+  box-shadow: 0 10px 40px rgba(230, 210, 255, 0.25); /* very soft lavender glow */
+  background: radial-gradient(circle at 10% 10%, rgba(248, 244, 255, 0.9), transparent 30%),
+              linear-gradient(180deg, #faf5ff 0%, #f4e9ff 50%, #f8f2ff 100%);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Ensure full-screen center alignment */
+#details {
+  position: relative;
+  overflow: hidden;
+  min-height: 100vh;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.intro {
+  position: absolute; /* ✅ make intro overlay the whole stage */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  transition: opacity 1s ease;
+  z-index: 2;
+}
+
+.decor {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 180px;
+  opacity: 0.9;
+  animation: float 3s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(-50%) translateX(0); }
+  50% { transform: translateY(-55%) translateX(5px); }
+}
+
+.decor.left {
+  left: 5%;
+}
+
+.decor.right {
+  right: 5%;
+  transform: translateY(-50%) scaleX(-1);
+  animation-delay: 1.5s;
+}
+
+.flower {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 500px;
+  transition: all 2s ease;
+  opacity: 1;
+  z-index: 1;
+}
+
+.flower.move-away {
+  transform: translate(-50%, -150%) scale(0.6);
+  opacity: 0;
+}
+
+@media (max-width: 768px) {
+  .decor.left,
+  .decor.right {
+    display: none;
+  }}
+/* ------------------------------
+   NAMES REVEAL (centered properly)
+--------------------------------*/
+.names {
+  position: absolute; /* ✅ centers names at same spot as intro */
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) translateY(10px) scale(.98);
+  width: 100%;
+  height: 100%;
+  background-image: url('./flowc.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  text-align: center;
+  z-index: 3;
+  opacity: 0;
+  transition:
+    opacity 1s ease 0.2s,
+    transform 1s cubic-bezier(.2, .9, .3, 1) 0.2s;
+  pointer-events: none;
+}
+
+.names.show {
+  opacity: 1;
+  transform: translate(-50%, -50%) translateY(0) scale(1);
+}
+
+/* main couple name */
+.names .couple {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(28px, 6vw, 64px);
+  color: #000000;
+  margin: 0;
+  font-weight: 700;
+}
+
+/* subtitle (optional) */
+.names .subtitle {
+ 
+  font-size: clamp(12px, 2.2vw, 18px);
+  color: #777;
+  font-weight: 500;
+}
+
+/* gentle floating effect */
+@keyframes floatUp {
+  0% { transform: translateY(8px) scale(.99); }
+  50% { transform: translateY(0) scale(1); }
+  100% { transform: translateY(8px) scale(.99); }
+}
+
+.names.show .couple {
+  animation: floatUp 4s ease-in-out infinite;
+}
+
+/* click message */
+.click-text {
+  margin-top: 20px;
+  font-size: 1.2rem;
+  color: #555;
+  opacity: 0.8;
+  z-index: 4;
+  position: relative;
+}
+
+
+
+/* ------------------------------
+   4. CONTROLS & BUTTONS
+--------------------------------*/
+.controls {
+  position: absolute;
+  left: 16px;
+  bottom: 16px;
+  z-index: 3;
+  font-size: 13px;
+  color: #444;
+  display: flex;
+  gap: .5rem;
+  align-items: center;
+}
+
+.btn {
+  background: transparent;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  padding: .45rem .65rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+/* ------------------------------
+   5. RUSTIC / WOOD STYLE ELEMENTS
+--------------------------------*/
+.rustic-border {
+  border: 3px solid #c084fc;
+  border-radius: 15px;
+  position: relative;
+}
+
+.rustic-border::before {
+  content: '';
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  right: -5px;
+  bottom: -5px;
+  border: 1px solid #e879f9;
+  border-radius: 20px;
+  z-index: -1;
+}
+
+.wood-texture {
+  background-image: 
+    radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 40% 80%, rgba(120, 119, 198, 0.2) 0%, transparent 50%);
+  background-color: #faf5ff;
+}
+
+/* ------------------------------
+   6. BUTTON VARIANTS
+--------------------------------*/
+.btn-rustic {
+  background: linear-gradient(135deg, #c084fc, #a855f7);
+  border: 2px solid #9333ea;
+  transition: all 0.3s ease;
+}
+
+.btn-rustic:hover {
+  background: linear-gradient(135deg, #a855f7, #9333ea);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(168, 85, 247, 0.3);
+}
+
+/* ------------------------------
+   6. BUTTON Dari Syurga
+--------------------------------*/
+
+.btn-heavenly {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    padding: 0.9rem 1.5rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: white;
+    background: linear-gradient(135deg, #60518d, #663473, #93c5fd);
+    background-size: 200% 200%;
+    border: none;
+    border-radius: 1rem;
+    box-shadow: 0 0 20px rgba(167, 139, 250, 0.6),
+                0 0 40px rgba(245, 208, 254, 0.4);
+    cursor: pointer;
+    transition: all 0.4s ease;
+    animation: heavenlyGlow 6s ease-in-out infinite;
+  }
+
+  .btn-heavenly::before {
+    content: "";
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    border-radius: 1rem;
+    background: linear-gradient(45deg, #fff, #e0f2fe, #f0abfc);
+    filter: blur(12px);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    z-index: -1;
+  }
+
+  .btn-heavenly:hover::before {
+    opacity: 1;
+  }
+
+  .btn-heavenly:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 0 30px rgba(167, 139, 250, 0.8),
+                0 0 60px rgba(245, 208, 254, 0.6);
+  }
+
+  @keyframes heavenlyGlow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+/* ------------------------------
+   7. ANIMATIONS & EFFECTS
+--------------------------------*/
+.floating {
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+.parallax {
+  transform: translateY(var(--scroll-y, 0));
+}
+
+.fade-in {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.8s ease-out;
+}
+
+.fade-in.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.gradient-text {
+  background: linear-gradient(135deg, #c084fc, #e879f9);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ------------------------------
+   8. MUSIC CONTROLLER
+--------------------------------*/
+#soundcloud-player {
+  display: none;
+}
+
+.music-controller {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: white;
+  border-radius: 50px;
+  padding: 10px 15px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  cursor: pointer;
+}
+
+.music-icon {
+  font-size: 1.8rem;
+  color: #ff5500;
+  animation: pulse 2s infinite;
+}
+
+.music-title {
+  font-size: 1rem;
+  font-weight: bold;
+  color: #ff5500;
+  animation: dance 1s infinite;
+  white-space: nowrap;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+@keyframes dance {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px) rotate(-2deg); }
+}
+
+/* ------------------------------
+   9. RESPONSIVE DESIGN
+--------------------------------*/
+@media (max-width: 520px) {
+  .stage {
+    height: 64vh;
+    border-radius: 14px;
+  }
+
+  .controls {
+    left: 10px;
+    bottom: 10px;
+  }
+}
+
+    </style>
+</head>
+<body class="wood-texture poppins">
+    <!-- Hero Section -->
+    <section id="details">
+      <div class="stage">
+        <!-- INTRO -->
+        <div class="intro">
+          <img src="./Rose.png" class="decor left md:block" alt="left decoration" />
+          <h2 class="dancing-script text-4xl md:text-5xl font-bold text-center gradient-text fade-in">
+            Majlis</br>
+            Walimatul urus
+        </h2>
+          <p style="font-size:0.8rem;margin:5px 0 20px;">- 16 Nov 2025 -</p>
+          <img src="./Rose.png" class="decor right md:block" alt="right decoration" />
+          <p class="click-text">Sila Tekan</p>
+          <img src="./Cover.png" alt="Flower" class="flower" />
+        </div>
+    
+        <!-- NAMES -->
+        
+        <div class="names flex flex-col gap-6 text-center justify-center items-center relative">
+          <!-- Names with overlay effect (appears first visually) -->
+<div class="border-2 border-purple-900 rounded-3xl p-5 w-fit h-fit">
+  <div class="flex justify-center z-0 items-end mb-3">
+    <img src="./couple.png" alt="Couple" class="w-20 h-20" />
+  </div>
+  <div class="relative inline-block z-10">
+    <!-- Purple shadow -->
+    <h2 class="dancing-script text-6xl md:text-7xl font-bold text-white relative top-[2px] left-[2px] fade-in">
+      Abu Mansor <br /> & <br /> Nur
+    </h2>
+
+    <!-- White overlay -->
+    <h2 class="dancing-script text-6xl md:text-7xl font-bold text-purple-800 md:-mt-[14rem] -mt-[11.5rem]  fade-in">
+      Abu Mansor <br /> & <br /> Nur
+    </h2>
+  </div>
+</div>
+         
+        
+          <!-- Couple Image -->
+        
+        
+          <!-- Date and Location -->
+          <div class="text-purple-200 z-0 bg-black/50 w-fit h-fit p-4 rounded-3xl space-y-1 relative -pt-20">
+            <p class="text-center text-lg">Ahad | 16 November 2025</p>
+            <p class="text-center text-lg">25 Jamadil Awal 1447</p>
+            <p class="text-center text-lg">Masjid Sultan Muhammad 1, Kuantan</p>
+          </div>
+        </div>
+        
+      
+        
+      
+       
+        
+      
+      </div>
+    </section>
+    
+    <script>
+      const intro = document.querySelector('.intro');
+      const flower = document.querySelector('.flower');
+      const names = document.querySelector('.names');
+    
+      document.body.addEventListener('click', () => {
+        // Stop decoration animation and fade intro
+        document.querySelectorAll('.decor').forEach(d => d.style.animation = 'none');
+        intro.style.opacity = 0;
+    
+        // Move flower and reveal names
+        setTimeout(() => {
+          flower.classList.add('move-away');
+          setTimeout(() => {
+            names.classList.add('show');
+          }, 1200);
+        }, 800);
+      });
+    </script>
+    
+
+
+    <!-- Wedding Details Section -->
+    <section id="details" class="py-20 px-6">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="dancing-script text-4xl md:text-5xl font-bold text-center gradient-text mb-16 fade-in">
+                Butiran Majlis
+            </h2>
+            
+            <div class="grid md:grid-cols-2 gap-12">
+                <!-- Solemnization -->
+                <div class="rustic-border bg-white/80 backdrop-blur-sm p-8 fade-in">
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-gradient-to-br from-purple-400 to-pink-400 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M10 2L3 7v11a2 2 0 002 2h10a2 2 0 002-2V7l-7-5z"/>
+                                <polyline points="9,21 9,9 15,9"/>
+                            </svg>
+                        </div>
+                        <h3 class="dancing-script text-3xl font-bold text-purple-700 mb-4">Akad Nikah</h3>
+                        <div class="space-y-3 text-gray-600">
+                            <p class="flex items-center justify-center">
+                                <svg class="w-5 h-5 mr-2 text-purple-500" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/>
+                                </svg>
+                                16 November 2025
+                            </p>
+                            <p class="flex items-center justify-center">
+                                <svg class="w-5 h-5 mr-2 text-purple-500" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/>
+                                </svg>
+                                11.00 PAGI
+                            </p>
+                            <p class="flex items-center justify-center">
+                                <svg class="w-5 h-5 mr-2 text-purple-500" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/>
+                                </svg>
+                                Masjid Sultan Muhammad 1, Kuantan
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Reception -->
+                <div class="rustic-border bg-white/80 backdrop-blur-sm p-8 fade-in">
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-gradient-to-br from-pink-400 to-purple-400 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"/>
+                            </svg>
+                        </div>
+                        <h3 class="dancing-script text-3xl font-bold text-purple-700 mb-4">Walimatul Urus</h3>
+                        <div class="space-y-3 text-gray-600">
+                            <p class="flex items-center justify-center">
+                                <svg class="w-5 h-5 mr-2 text-purple-500" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/>
+                                </svg>
+                                16 November 2025
+                            </p>
+                            <p class="flex items-center justify-center">
+                                <svg class="w-5 h-5 mr-2 text-purple-500" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/>
+                                </svg>
+                                10.00 pagi hinggaa 12.00 tengah hari
+                            </p>
+                            <p class="flex items-center justify-center">
+                                <svg class="w-5 h-5 mr-2 text-purple-500" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/>
+                                </svg>
+                                Masjid Sultan Muhammad 1, Kuantan
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Location Maps Section -->
+    <section id="location" class="py-20 px-6 bg-gradient-to-br from-purple-50 to-pink-50">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="dancing-script text-4xl md:text-5xl font-bold text-center gradient-text mb-16 fade-in">
+                Lokasi & Peta
+            </h2>
+            
+            <div class="grid md:grid-cols-1 gap-12">
+                <!-- Solemnization Map -->
+               
+                
+                <!-- Reception Map -->
+                <div class="rustic-border bg-white p-6 fade-in">
+                    <h3 class="dancing-script text-2xl font-bold text-purple-700 mb-4 text-center"> Masjid Sultan Muhammad 1, Kuantan</h3>
+                    <div class="aspect-video rounded-lg overflow-hidden mb-4">
+                  
+                        <iframe
+                          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2035854.3280865427!2d101.26720258160924!3d4.721703228243273!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31c8ba9bbeabeb4b%3A0xd36810b3dadc2643!2sMasjid%20Negeri%20Pahang%20(Sultan%20Ahmad%201)%20Kuantan!5e0!3m2!1sen!2smy!4v1761577625876!5m2!1sen!2smy"
+                          width="100%"
+                          height="100%"
+                          style="border:0;"
+                          allowfullscreen=""
+                          loading="lazy"
+                          referrerpolicy="no-referrer-when-downgrade"
+                        ></iframe>
+              
+                      
+                    </div>
+                    <button 
+  onclick="openMap('Masjid Negeri Pahang Sultan Ahmad 1, Kuantan')" 
+  class="btn-heavenly">
+  Buka di Peta 
+</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- RSVP Section -->
+    <section id="rsvp" class="py-20 px-6">
+        <div class="max-w-4xl mx-auto">
+          <h2 class="dancing-script text-4xl md:text-5xl font-bold text-center gradient-text mb-16 fade-in">
+            Kehadiran 
+          </h2>
+      
+          <div class="rustic-border bg-white/90 backdrop-blur-sm p-8 fade-in">
+            <form id="rsvpForm" class="space-y-6">
+              <!-- Nama Penuh -->
+              <div>
+                <label for="guestName" class="block text-sm font-medium text-gray-700 mb-2">Nama Penuh</label>
+                <input 
+                  type="text" 
+                  id="guestName" 
+                  name="guestName" 
+                  required 
+                  class="w-full px-4 py-3 border-2 border-purple-200 rounded-lg focus:border-purple-400 focus:outline-none transition-colors"
+                  placeholder="Nama anda">
+              </div>
+      
+              <!-- Kehadiran -->
+              <div>
+                <label for="attendance" class="block text-sm font-medium text-gray-700 mb-2">Kehadiran</label>
+                <select 
+                  id="attendance" 
+                  name="attendance" 
+                  required 
+                  class="w-full px-4 py-3 border-2 border-purple-200 rounded-lg focus:border-purple-400 focus:outline-none transition-colors">
+                  <option value="">Sila pilih</option>
+                  <option value="Yes">Ya, saya akan hadir</option>
+                  <option value="No">Tidak dapat hadir</option>
+                </select>
+              </div>
+      
+              <!-- Bilangan Tetamu -->
+              <div>
+                <label for="guestCount" class="block text-sm font-medium text-gray-700 mb-2">Bilangan Tetamu</label>
+                <select 
+                  id="guestCount" 
+                  name="guestCount" 
+                  required 
+                  class="w-full px-4 py-3 border-2 border-purple-200 rounded-lg focus:border-purple-400 focus:outline-none transition-colors">
+                  <option value="">Pilih bilangan tetamu</option>
+                  <option value="1">1 Orang</option>
+                  <option value="2">2 Orang</option>
+                  <option value="3">3 Orang</option>
+                  <option value="4">4 Orang</option>
+                  <option value="5">5 Orang</option>
+                </select>
+              </div>
+      
+              <!-- Mesej -->
+              <div>
+                <label for="message" class="block text-sm font-medium text-gray-700 mb-2">Mesej (Pilihan)</label>
+                <textarea 
+                  id="message" 
+                  name="message" 
+                  rows="4"
+                  class="w-full px-4 py-3 border-2 border-purple-200 rounded-lg focus:border-purple-400 focus:outline-none transition-colors"
+                  placeholder="Kongsi ucapan anda untuk pasangan bahagia ini..."></textarea>
+              </div>
+      
+              <!-- Butang Hantar -->
+              <button type="submit" class="w-full btn-rustic text-white py-4 rounded-lg font-medium text-lg">
+                Hantar
+              </button>
+            </form>
+      
+            <!-- Status Message -->
+            <p id="rsvpStatus" class="text-center mt-4 text-gray-700 font-medium hidden"></p>
+      
+            <!-- Bahagian Eksport -->
+           
+          </div>
+        </div>
+
+        <!-- Hidden SoundCloud player -->
+  
+
+
+      </section>
+      
+      
+     
+<script>
+    const form = document.getElementById('rsvpForm');
+    const statusEl = document.getElementById('rsvpStatus');
+  
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault(); // Prevent reload
+  
+      const scriptURL = "https://script.google.com/macros/s/AKfycbzTTxT3o9PwALWxeMfjJnVIxcZVzdOw7gCTRZBhzH8xFj748SP2NhAoCLmC1QYGXMS-/exec";
+      const formData = new FormData(form);
+  
+      statusEl.textContent = "Menghantar RSVP anda...";
+      statusEl.classList.remove("hidden");
+      statusEl.classList.remove("text-green-600");
+      statusEl.classList.add("text-gray-700");
+  
+      try {
+        const response = await fetch(scriptURL, { method: 'POST', body: formData });
+        if (response.ok) {
+          form.reset();
+          statusEl.textContent = "✅ Terima kasih! RSVP anda telah dihantar.";
+          statusEl.classList.remove("text-gray-700");
+          statusEl.classList.add("text-green-600");
+  
+          // Optional: hide message after 5 seconds
+          setTimeout(() => statusEl.classList.add("hidden"), 5000);
+        } else {
+          throw new Error('Response not OK');
+        }
+      } catch (error) {
+        statusEl.textContent = "❌ Maaf, berlaku ralat. Sila cuba lagi.";
+        statusEl.classList.remove("text-green-600");
+        statusEl.classList.add("text-red-600");
+      }
+
+      
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+    const attendanceSelect = document.getElementById('attendance');
+    const guestCountSelect = document.getElementById('guestCount');
+
+    // Initialize state (in case attendance has a saved value or browser autofill)
+    function updateGuestCountState() {
+      if (attendanceSelect.value === 'Yes') {
+        guestCountSelect.disabled = false;
+        guestCountSelect.classList.remove('bg-gray-100', 'text-gray-400');
+      } else {
+        guestCountSelect.disabled = true;
+        guestCountSelect.value = '';
+        // visually indicate disabled (you already have disabled: styles, but ensure classes too)
+        guestCountSelect.classList.add('bg-gray-100', 'text-gray-400');
+      }
+    }
+
+    // Run once on load
+    updateGuestCountState();
+
+    // Update on change
+    attendanceSelect.addEventListener('change', updateGuestCountState);
+  });
+  </script>
+   
+  
+    
+      
+
+    <!-- song-->
+    <section>
+      <!-- Hidden SoundCloud Player -->
+      <iframe 
+        id="soundcloud-player"
+        width="100%" 
+        height="166" 
+        scrolling="no" 
+        frameborder="no" 
+        allow="autoplay"
+        src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/soundcloud%253Atracks%253A95980971&color=%23a0a07c&auto_play=true&hide_related=false&show_comments=false&show_user=false&show_reposts=false&show_teaser=false">
+      </iframe>
+    
+      <!-- Music Control Icon -->
+      <div id="music-toggle" class="music-icon">⏸️</div>
+    
+      <style>
+        /* Hide the iframe completely */
+        #soundcloud-player {
+          display: none;
+        }
+    
+        /* Floating music icon */
+        .music-icon {
+          position: fixed;
+          bottom: 20px;
+          right: 20px;
+          background: #fff;
+          color: #a0a07c;
+          font-size: 2rem;
+          border-radius: 50%;
+          width: 55px;
+          height: 55px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+          cursor: pointer;
+          transition: transform 0.3s ease, background 0.3s ease;
+          z-index: 9999;
+        }
+    
+        .music-icon:hover {
+          transform: scale(1.1);
+          background: #f8f8f8;
+        }
+    
+        /* Pulse animation when playing */
+        .playing {
+          animation: pulse 2s infinite;
+        }
+    
+        @keyframes pulse {
+          0% { box-shadow: 0 0 0 0 rgba(160,160,124,0.6); }
+          70% { box-shadow: 0 0 0 10px rgba(160,160,124,0); }
+          100% { box-shadow: 0 0 0 0 rgba(160,160,124,0); }
+        }
+      </style>
+    
+      <script src="https://w.soundcloud.com/player/api.js"></script>
+      <script>
+        const iframe = document.getElementById("soundcloud-player");
+        const toggle = document.getElementById("music-toggle");
+        let widget;
+        let isPlaying = true; // song starts auto-playing
+    
+        window.addEventListener("load", () => {
+          widget = SC.Widget(iframe);
+          widget.bind(SC.Widget.Events.READY, () => {
+            toggle.classList.add("playing");
+          });
+        });
+    
+        toggle.addEventListener("click", () => {
+          if (!widget) return;
+    
+          if (isPlaying) {
+            widget.pause();
+            toggle.textContent = "▶️"; // change to play icon
+            toggle.classList.remove("playing");
+          } else {
+            widget.play();
+            toggle.textContent = "⏸️"; // change to pause icon
+            toggle.classList.add("playing");
+          }
+    
+          isPlaying = !isPlaying;
+        });
+      </script>
+    </section>
+    
+      
+
+    <!-- Footer -->
+    <footer class="py-12 px-6 bg-gradient-to-r from-purple-600 to-pink-600 text-white text-center">
+      <div class="max-w-4xl mx-auto">
+        <h3 class="dancing-script text-3xl font-bold mb-4">Mansor & Nur</h3>
+        <p class="text-purple-100 mb-6">Setinggi-tinggi penghargaan atas kehadiran dan doa restu anda</p>
+        <div class="w-24 h-1 bg-white/50 mx-auto"></div>
+        <p class="text-purple-200 text-sm mt-6">16 November 2025 • Dibina oleh asstudio</p>
+      </div>
+    </footer>
+    
+
+    <script>
+        // Smooth scrolling
+        function scrollToSection(sectionId) {
+            document.getElementById(sectionId).scrollIntoView({
+                behavior: 'smooth'
+            });
+        }
+
+        // Parallax effect
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const parallaxElements = document.querySelectorAll('.parallax');
+            
+            parallaxElements.forEach(element => {
+                const speed = element.dataset.speed || 0.5;
+                element.style.setProperty('--scroll-y', `${scrolled * speed}px`);
+            });
+        });
+
+        // Fade in animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Open map function
+        function openMap(location) {
+            const encodedLocation = encodeURIComponent(location);
+            window.open(`https://www.google.com/maps/search/${encodedLocation}`, '_blank', 'noopener,noreferrer');
+        }
+
+  
+        // Guestbook Form Handler
+        document.getElementById('guestbookForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const entryData = {
+                name: document.getElementById('visitorName').value,
+                message: document.getElementById('guestMessage').value,
+                timestamp: new Date().toISOString()
+            };
+            
+            // Get existing entries
+            let entries = JSON.parse(localStorage.getItem('weddingGuestbook') || '[]');
+            entries.unshift(entryData); // Add to beginning
+            localStorage.setItem('weddingGuestbook', JSON.stringify(entries));
+            
+            // Reset form
+            this.reset();
+            
+            // Refresh display
+            displayGuestbookEntries();
+            
+            // Show success message
+            const button = this.querySelector('button');
+            const originalText = button.textContent;
+            button.textContent = '✓ Message Added!';
+            button.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+            
+            setTimeout(() => {
+                button.textContent = originalText;
+                button.style.background = '';
+            }, 2000);
+        });
+
+        // Display guestbook entries
+        function displayGuestbookEntries() {
+            const entries = JSON.parse(localStorage.getItem('weddingGuestbook') || '[]');
+            const container = document.getElementById('guestbookEntries');
+            
+            if (entries.length === 0) {
+                container.innerHTML = '<div class="text-center text-gray-500 py-8">Be the first to sign our guestbook!</div>';
+                return;
+            }
+            
+            container.innerHTML = entries.map(entry => `
+                <div class="rustic-border bg-white/80 backdrop-blur-sm p-6 fade-in">
+                    <div class="flex items-start justify-between mb-3">
+                        <h4 class="font-semibold text-purple-700">${entry.name}</h4>
+                        <span class="text-sm text-gray-500">${new Date(entry.timestamp).toLocaleDateString()}</span>
+                    </div>
+                    <p class="text-gray-700 leading-relaxed">${entry.message}</p>
+                </div>
+            `).join('');
+            
+            // Re-observe new elements for fade-in animation
+            container.querySelectorAll('.fade-in').forEach(el => {
+                observer.observe(el);
+            });
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            updateRSVPCount();
+            displayGuestbookEntries();
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9917a56143e7e454',t:'MTc2MDk1NDE5NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

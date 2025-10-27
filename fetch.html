@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Senarai RSVP Tetamu</title>
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      background: #f3f4f6;
+      padding: 2rem;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+    input {
+      margin-bottom: 1rem;
+      padding: 10px;
+      width: 100%;
+      max-width: 400px;
+      border-radius: 8px;
+      border: 1px solid #d1d5db;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    th, td {
+      padding: 12px 15px;
+      text-align: left;
+      vertical-align: top;
+    }
+    th {
+      background: #e5e7eb;
+    }
+    tr:nth-child(even) {
+      background: #f9fafb;
+    }
+    td.message {
+      max-width: 400px;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Senarai Kehadiran Tetamu</h1>
+  <input type="text" id="searchBox" placeholder="Cari nama tetamu..." />
+  
+  <table id="rsvpTable">
+    <thead><tr id="headerRow"></tr></thead>
+    <tbody id="dataBody"></tbody>
+  </table>
+
+  <script>
+    const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTdVxm2zRMAc71l3SUG9psiWT_qSZrZg2pEeUjfUp7YOybspDNyFZ1Z3u4yTmGCNbDZUTRjFOYANgty/pub?gid=0&single=true&output=csv";
+    const searchBox = document.getElementById("searchBox");
+    const headerRow = document.getElementById("headerRow");
+    const dataBody = document.getElementById("dataBody");
+    let allRows = [];
+
+    const customHeaders = [
+      "Tetamu",          // guestName
+      "Kehadiran",       // attendance
+      "Bil. Tetamu",     // guestCount
+      "Ucapan",          // message
+      "Tarikh",          // Date
+      "Jumlah Tetamu",   // Jum.Tetamu
+     
+    ];
+
+    fetch(CSV_URL)
+      .then(res => res.text())
+      .then(csv => {
+        const rows = csv.trim().split("\n").map(r => r.split(","));
+        const headers = rows[0];
+        allRows = rows.slice(1);
+
+        // Render custom headers (Malay)
+        customHeaders.forEach(h => {
+          const th = document.createElement("th");
+          th.textContent = h;
+          headerRow.appendChild(th);
+        });
+
+        renderTable(allRows);
+      })
+      .catch(err => console.error("Error fetching CSV:", err));
+
+    function renderTable(rows) {
+      dataBody.innerHTML = "";
+      rows.forEach(row => {
+        const tr = document.createElement("tr");
+        row.forEach((cell, index) => {
+          const td = document.createElement("td");
+          td.textContent = cell;
+          if (index === 3) td.classList.add("message"); // make message column wider
+          tr.appendChild(td);
+        });
+        dataBody.appendChild(tr);
+      });
+    }
+
+    searchBox.addEventListener("input", e => {
+      const term = e.target.value.toLowerCase();
+      const filtered = allRows.filter(r => r.some(cell => cell.toLowerCase().includes(term)));
+      renderTable(filtered);
+    });
+  </script>
+
+</body>
+</html>
