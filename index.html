@@ -523,6 +523,36 @@ body {
                 </div>
                 
                 <!-- Reception -->
+                      <div class="rustic-border bg-white/80 backdrop-blur-sm p-8 fade-in">
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-gradient-to-br from-pink-400 to-purple-400 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"/>
+                            </svg>
+                        </div>
+                        <h3 class="dancing-script text-3xl font-bold text-purple-700 mb-4">Walimatul Urus</h3>
+                        <div class="space-y-3 text-gray-600">
+                            <p class="flex items-center justify-center">
+                                <svg class="w-5 h-5 mr-2 text-purple-500" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/>
+                                </svg>
+                                16 November 2025
+                            </p>
+                            <p class="flex items-center justify-center">
+                                <svg class="w-5 h-5 mr-2 text-purple-500" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/>
+                                </svg>
+                                10.00 pagi hinggaa 12.00 tengah hari
+                            </p>
+                            <p class="flex items-center justify-center">
+                                <svg class="w-5 h-5 mr-2 text-purple-500" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/>
+                                </svg>
+                                Masjid Sultan Muhammad 1, Kuantan
+                            </p>
+                        </div>
+                    </div>
+                </div>
               
             </div>
         </div>
@@ -570,6 +600,88 @@ body {
     </section>
 
     <!-- RSVP Section -->
+
+     <section id="rsvp" class="py-20 px-6">
+        <div class="max-w-4xl mx-auto">
+          <h2 class="dancing-script text-4xl md:text-5xl font-bold text-center gradient-text mb-16 fade-in">
+            Kehadiran 
+          </h2>
+      
+          <div class="rustic-border bg-white/90 backdrop-blur-sm p-8 fade-in">
+            <form id="rsvpForm" class="space-y-6">
+              <!-- Nama Penuh -->
+              <div>
+                <label for="guestName" class="block text-sm font-medium text-gray-700 mb-2">Nama Penuh</label>
+                <input 
+                  type="text" 
+                  id="guestName" 
+                  name="guestName" 
+                  required 
+                  class="w-full px-4 py-3 border-2 border-purple-200 rounded-lg focus:border-purple-400 focus:outline-none transition-colors"
+                  placeholder="Nama anda">
+              </div>
+      
+              <!-- Kehadiran -->
+              <div>
+                <label for="attendance" class="block text-sm font-medium text-gray-700 mb-2">Kehadiran</label>
+                <select 
+                  id="attendance" 
+                  name="attendance" 
+                  required 
+                  class="w-full px-4 py-3 border-2 border-purple-200 rounded-lg focus:border-purple-400 focus:outline-none transition-colors">
+                  <option value="">Sila pilih</option>
+                  <option value="Yes">Ya, saya akan hadir</option>
+                  <option value="No">Tidak dapat hadir</option>
+                </select>
+              </div>
+      
+              <!-- Bilangan Tetamu -->
+              <div>
+                <label for="guestCount" class="block text-sm font-medium text-gray-700 mb-2">Bilangan Tetamu</label>
+                <select 
+                  id="guestCount" 
+                  name="guestCount" 
+                  required 
+                  class="w-full px-4 py-3 border-2 border-purple-200 rounded-lg focus:border-purple-400 focus:outline-none transition-colors">
+                  <option value="">Pilih bilangan tetamu</option>
+                  <option value="1">1 Orang</option>
+                  <option value="2">2 Orang</option>
+                  <option value="3">3 Orang</option>
+                  <option value="4">4 Orang</option>
+                  <option value="5">5 Orang</option>
+                </select>
+              </div>
+      
+              <!-- Mesej -->
+              <div>
+                <label for="message" class="block text-sm font-medium text-gray-700 mb-2">Mesej (Pilihan)</label>
+                <textarea 
+                  id="message" 
+                  name="message" 
+                  rows="4"
+                  class="w-full px-4 py-3 border-2 border-purple-200 rounded-lg focus:border-purple-400 focus:outline-none transition-colors"
+                  placeholder="Kongsi ucapan anda untuk pasangan bahagia ini..."></textarea>
+              </div>
+      
+              <!-- Butang Hantar -->
+              <button type="submit" class="w-full btn-rustic text-white py-4 rounded-lg font-medium text-lg">
+                Hantar
+              </button>
+            </form>
+      
+            <!-- Status Message -->
+            <p id="rsvpStatus" class="text-center mt-4 text-gray-700 font-medium hidden"></p>
+      
+            <!-- Bahagian Eksport -->
+           
+          </div>
+        </div>
+
+        <!-- Hidden SoundCloud player -->
+  
+
+
+      </section>
     
       
       
